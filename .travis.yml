@@ -12,8 +12,21 @@ deploy:
   provider: releases
   api_key:
     secure: DW9tBvphZUTPbd3vn5MlPoeh9s2v7FyYSqqHNVo8wQDcV3TwWG0hW9WxzkMdtnMDemlsSbed4DsZdShJ+u6q78GI42Br7U2qvbeYM0+LPHUujQhKYetIIRuARo4JAyniKFTC+MA3apBEGxz754HAycdNyEwk9YhX180sPx+kT+qNyhqXDNfZ1xq6IEcNH2GsCHTS3kbpiKRg3qapgSSGdUeZxX+bzt0IQGuNMBgDH8IWf8ZF1dbu8OyxvJan9FjSQKaNJ8okAe3DMJ7c9EwRUAGutKtbaYftvwZHRUyjkotZ3DtwKvAji/k7SSOoWTrBe9bhUVLj8FIUygMUAykA3bVUr4syIzrAFHNFWemagBqStvt+k2xQqLjJF7HQLtF7UjFF/0x3iIRFqWpTPWiT7Pz747DnVKo6P6X47wRrdsTGYNpEF9y0thef0bIax93NM4gZiBm2cY0dZpjggBTohvZWJhIw/avUVYPNw4lx3S87C82gvZHuhRD5QIJpw17NSVRTOepo5/i+wl/PTRMrIivwJXCRCDZ5OS24k9VjdLa++GzJaCI5yPtickkNl6NBVzVnobv1Okiz6pFawlnT3E9oAjDf5+z6cRTNe5HUguWlEGI3LMita1iBXX7mXmi1yCM4Hxejno7f3pTd6kUbWZXKkErZEE9x8RhFyU89Ptg=
-  file: app/build/outputs/apk/app-debug.apk
+  file: OpenScale.apk
   skip_cleanup: true
   on:
     tags: true
     repo: mapero/openScale
+env:
+  global:
+    secure: qR7MXOMmfLl2wFX4NlmfHcJZiNSYN6PiVTseQsNSD4WdvVYMYvQT6sGFbxz7KSFL22uhFfThwaS5lWBmHtQCzCk7r4Ox+1ugr1aAoP+vid1xICnpF2pGWNs7aYW1dKZ3wDfD+tL58W2k1D4sqWyEOFNKQsW27nprQ3HnIuVqospvgWLAunEt9r7avnTZepqy1JBZoAA4cetbl3V/pGJsF7Rrfo78j18s0qkqXiqSIjzxVa8Fe4an28odZRPPZSlFAKHIlw7yhirioGfzTlO0jexz5WgMOWc6XUupHL6hnijeqHN0qUgILxNUImB4Ng5Qx9kd3RS0iABqQ6K5jg0hKg/ZGVt7fimz1vGCHGgZ9gXKuZjAhi8vCVBhF28J++HlzlybbwPQ27Lw5KvTXKH+Ksq7tMwnG1ZDn1EkSm+Pay5IwWGUHUEe1rJ6YrFl54rZncigeRsM/Pr+U1AxxTwRP5zmI5zaXGc2/2KPS1uT2M3wG99RRo/89TKZgJY9Rulo8uXn5iQuM7xiVrx5nk8OTND1FOyvpReRBhFN6lstQLiZKX/3ke20u+tIJdotNUBTQzUSyD/U4FL+iJ0B/q2VHuKmfkUWD3wIElb49nwhDk7dZuwVTF767jAlAotGtotEmF0jPPanc8nBfEsQ6DsTOcoBQeZ8eug/xGgtAgZjMDY=
+before_install:
+  - openssl aes-256-cbc -K $encrypted_565ce3e3316d_key -iv $encrypted_565ce3e3316d_iv -in keystore.jks.enc -out keystore.jks -d
+
+before_deploy:
+- cp $TRAVIS_BUILD_DIR/keystore.jks $HOME
+- cd app/build/outputs/apk/
+- jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore $HOME/keystore.jks -storepass $storepass -keypass $storepass app-debug-unsigned.apk key0
+# Verification
+- jarsigner -verify app-debug-unsigned.apk
+- "${ANDROID_HOME}/build-tools/24.0.2/zipalign -v 4 app-release-unsigned.apk OpenScale.apk"
