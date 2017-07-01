@@ -1,16 +1,19 @@
 language: android
 jdk: oraclejdk8
-
 android:
   components:
-    - platform-tools
-    - tools
-    - build-tools-25.0.2
-    - android-24
-    - extra-android-m2repository
-
-after_success:
- - chmod +x ./upload_apk.sh
- - ./upload_apk.sh
-
+  - platform-tools
+  - tools
+  - build-tools-25.0.2
+  - android-24
+  - extra-android-m2repository
 script: cd android_app && ./gradlew assembleDebug
+deploy:
+  provider: releases
+  api_key:
+    secure: DW9tBvphZUTPbd3vn5MlPoeh9s2v7FyYSqqHNVo8wQDcV3TwWG0hW9WxzkMdtnMDemlsSbed4DsZdShJ+u6q78GI42Br7U2qvbeYM0+LPHUujQhKYetIIRuARo4JAyniKFTC+MA3apBEGxz754HAycdNyEwk9YhX180sPx+kT+qNyhqXDNfZ1xq6IEcNH2GsCHTS3kbpiKRg3qapgSSGdUeZxX+bzt0IQGuNMBgDH8IWf8ZF1dbu8OyxvJan9FjSQKaNJ8okAe3DMJ7c9EwRUAGutKtbaYftvwZHRUyjkotZ3DtwKvAji/k7SSOoWTrBe9bhUVLj8FIUygMUAykA3bVUr4syIzrAFHNFWemagBqStvt+k2xQqLjJF7HQLtF7UjFF/0x3iIRFqWpTPWiT7Pz747DnVKo6P6X47wRrdsTGYNpEF9y0thef0bIax93NM4gZiBm2cY0dZpjggBTohvZWJhIw/avUVYPNw4lx3S87C82gvZHuhRD5QIJpw17NSVRTOepo5/i+wl/PTRMrIivwJXCRCDZ5OS24k9VjdLa++GzJaCI5yPtickkNl6NBVzVnobv1Okiz6pFawlnT3E9oAjDf5+z6cRTNe5HUguWlEGI3LMita1iBXX7mXmi1yCM4Hxejno7f3pTd6kUbWZXKkErZEE9x8RhFyU89Ptg=
+  file: android_app/app/build/outputs/apk/app-debug.apk
+  skip_cleanup: true
+  on:
+    tags: true
+    repo: mapero/openScale
