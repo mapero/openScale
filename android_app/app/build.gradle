@@ -1,3 +1,8 @@
+
+plugins {
+    id 'com.gladed.androidgitversion' version '0.3.4'
+}
+
 apply plugin: 'com.android.application'
 
 android {
@@ -8,8 +13,8 @@ android {
         applicationId "com.health.openscale"
         minSdkVersion 18
         targetSdkVersion 22 // don't set target sdk > 22 otherwise bluetooth le discovery need permission to ACCESS_COARSE_LOCATION
-        versionCode 15
-        versionName "1.5.2"
+        versionCode androidGitVersion.code()
+        versionName androidGitVersion.name()
     }
 
     lintOptions {
