@@ -29,4 +29,4 @@ before_deploy:
 - jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore $HOME/keystore.jks -storepass $storepass -keypass $storepass app-debug-unsigned.apk key0
 # Verification
 - jarsigner -verify app-debug-unsigned.apk
-- "${ANDROID_HOME}/build-tools/24.0.2/zipalign -v 4 app-release-unsigned.apk OpenScale.apk"
+- "${ANDROID_HOME}build-tools/25.0.2/zipalign -v 4 app-debug-unsigned.apk OpenScale.apk"
